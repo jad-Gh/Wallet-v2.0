@@ -32,6 +32,7 @@ public class AppUserService {
     public void addUser (AppUser appUser){
         appUser.setActive(true);
         appUser.setCreatedAt(LocalDateTime.now());
+        appUser.setRoleName("ROLE_USER");
 
         try{
             appUserRepository.save(appUser);
