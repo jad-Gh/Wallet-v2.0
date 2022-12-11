@@ -32,8 +32,11 @@ public class AppUser {
     @Size(min = 6)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false,updatable = false)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String roleName;
+
+    @Column(nullable = false)
     private boolean active;
 
     @Column(nullable = false,updatable = false)
