@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class AppUserService {
         appUserRepository.findById(appUser.getId()).orElseThrow(
                 ()->{
                     log.error("User with id: %s not found in Update User Service".formatted(appUser.getId()));
-                    return new RuntimeException("User with id: %s not found".formatted(appUser.getId()));
+                    return new NotFoundException("User with id: %s not found".formatted(appUser.getId()));
                 });
 
         try{
@@ -63,7 +64,7 @@ public class AppUserService {
        appUserRepository.findById(id).orElseThrow(
                ()->{
                    log.error("User with id: %s not found in Delete User Service".formatted(id));
-                   return new RuntimeException("User with id: %s not found".formatted(id));
+                   return new NotFoundException("User with id: %s not found".formatted(id));
                });
 
        try {

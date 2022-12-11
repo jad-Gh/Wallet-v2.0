@@ -1,6 +1,10 @@
 package com.finance.walletV2.AppUser;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Generated;
@@ -21,15 +25,19 @@ public class AppUser {
     private String fullName;
 
     @Column(unique = true,nullable = false)
+    @Email(message = "Email should be a valid Email")
     private String email;
 
     @Column(nullable = false)
+    @Size(min = 6)
     private String password;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean active;
 
     @Column(nullable = false,updatable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
 
 }
