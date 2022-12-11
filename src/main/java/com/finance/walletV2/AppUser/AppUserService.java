@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -33,6 +35,7 @@ public class AppUserService {
         appUser.setActive(true);
         appUser.setCreatedAt(LocalDateTime.now());
         appUser.setRoleName("ROLE_USER");
+        appUser.setPassword(new BCryptPasswordEncoder().encode(appUser.getPassword()));
 
         try{
             appUserRepository.save(appUser);
@@ -50,6 +53,8 @@ public class AppUserService {
                     log.error("User with id: %s not found in Update User Service".formatted(appUser.getId()));
                     return new NotFoundException("User with id: %s not found".formatted(appUser.getId()));
                 });
+
+        appUser.setPassword(new BCryptPasswordEncoder().encode(appUser.getPassword()));
 
         try{
             appUserRepository.save(appUser);
