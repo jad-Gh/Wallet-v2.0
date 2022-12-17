@@ -1,8 +1,8 @@
 package com.finance.walletV2.AppUser;
 
 import com.finance.walletV2.CustomResponse.CustomResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +33,7 @@ public class AppUserController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomResponse> addUser(@RequestBody AppUser appUser){
+    public ResponseEntity<CustomResponse> addUser(@Valid @RequestBody AppUser appUser){
         appUserService.addUser(appUser);
         return ResponseEntity.ok().body(CustomResponse.builder()
                         .message("User created successfully")
@@ -44,7 +44,7 @@ public class AppUserController {
     }
 
     @PutMapping
-    public ResponseEntity<CustomResponse> updateUser(@RequestBody AppUser appUser){
+    public ResponseEntity<CustomResponse> updateUser(@Valid @RequestBody AppUser appUser){
         appUserService.updateUser(appUser);
         return ResponseEntity.ok().body(CustomResponse.builder()
                 .message("User updated successfully")

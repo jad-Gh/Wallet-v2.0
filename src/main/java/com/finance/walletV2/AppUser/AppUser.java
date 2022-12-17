@@ -29,7 +29,7 @@ public class AppUser {
     private String email;
 
     @Column(nullable = false)
-    @Size(min = 6)
+    @Size(min = 6,message = "Must be longer than 6 characters")
     private String password;
 
     @Column(nullable = false,updatable = false)
