@@ -1,4 +1,4 @@
-package com.finance.walletV2;
+package com.finance.walletV2.Account;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
