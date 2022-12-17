@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,13 @@ public class AppUserService {
         result.put("totalPages",data.getTotalPages());
         result.put("data",data.getContent());
         return result;
+    }
+
+    public AppUser getOneUser (String email){
+        AppUser appUser = appUserRepository.findByEmail(email).orElseThrow(
+                ()->new UsernameNotFoundException("User with email: %s not found".formatted(email))
+        );
+        return appUser;
     }
 
     public void addUser (AppUser appUser){

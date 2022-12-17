@@ -1,4 +1,4 @@
-package com.finance.walletV2.Account;
+package com.finance.walletV2.FinAccount;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Account {
+public class FinAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
