@@ -1,6 +1,7 @@
 package com.finance.walletV2.FinTransaction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.finance.walletV2.AppUser.AppUser;
 import com.finance.walletV2.FinCategory.FinCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,5 +31,9 @@ public class FinTransaction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private FinCategory finCategory;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private AppUser appUser;
 
 }
