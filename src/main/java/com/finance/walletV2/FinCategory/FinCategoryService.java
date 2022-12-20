@@ -85,6 +85,13 @@ public class FinCategoryService {
         return result;
     }
 
+    public FinCategory getCategoryById (Long id){
+        FinCategory finCategory = finCategoryRepository.findById(id)
+                .orElseThrow(()->new NotFoundException("Financial Category with id: %s no found".formatted(id)));
+
+        return finCategory;
+    }
+
     public void deleteCategory (Long id){
         FinCategory OldCategory = finCategoryRepository.findById(id).orElseThrow(
                 ()->{
