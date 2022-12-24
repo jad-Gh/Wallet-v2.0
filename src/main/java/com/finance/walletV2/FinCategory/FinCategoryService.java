@@ -88,7 +88,12 @@ public class FinCategoryService {
     public FinCategory getCategoryById (Long id){
         FinCategory finCategory = finCategoryRepository.findById(id)
                 .orElseThrow(()->new NotFoundException("Financial Category with id: %s no found".formatted(id)));
+        return finCategory;
+    }
 
+    public FinCategory getCategoryByIdAndUser (Long id,String email){
+        FinCategory finCategory = finCategoryRepository.findByIdAndAppUser_Email(id,email)
+                .orElseThrow(()->new NotFoundException("Financial Category with id: %s no found for User %s".formatted(id,email)));
         return finCategory;
     }
 

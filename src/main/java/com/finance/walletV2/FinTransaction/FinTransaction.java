@@ -1,5 +1,6 @@
 package com.finance.walletV2.FinTransaction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.finance.walletV2.AppUser.AppUser;
 import com.finance.walletV2.FinCategory.FinCategory;
@@ -28,12 +29,15 @@ public class FinTransaction {
     @Column(nullable = false)
     private int amount;
 
+    private String description;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private FinCategory finCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
+    @JsonIgnore
     private AppUser appUser;
 
 }
