@@ -31,7 +31,7 @@ public class FinTransaction {
 
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn
     private FinCategory finCategory;
 

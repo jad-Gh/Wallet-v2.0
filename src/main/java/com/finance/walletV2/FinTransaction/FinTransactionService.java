@@ -52,7 +52,7 @@ public class FinTransactionService {
             AppUser appUser = appUserService.getOneUser(auth.getName());
 
             FinTransaction oldFinTransaction = finTransactionRepository.findByIdAndAppUser_Email(finTransaction.getId(), appUser.getEmail())
-                    .orElseThrow(()->new NotFoundException("transaction with id %s for user %s".formatted(finTransaction.getId(),appUser.getEmail())));
+                    .orElseThrow(()->new NotFoundException(" with id %s for user %s".formatted(finTransaction.getId(),appUser.getEmail())));
 
             FinCategory finCategory = finCategoryService.getCategoryByIdAndUser(finTransaction.getFinCategory().getId(), appUser.getEmail());
 
@@ -63,8 +63,8 @@ public class FinTransactionService {
             finTransactionRepository.save(oldFinTransaction);
 
         }catch(Exception e){
-            log.error("Error Updating Transaction" + e.getMessage());
-            throw new RuntimeException("Error Updating Transaction"+ e.getLocalizedMessage());
+            log.error("Error Updating Transaction " + e.getMessage());
+            throw new RuntimeException("Error Updating Transaction "+ e.getLocalizedMessage());
         }
     }
 
@@ -92,7 +92,7 @@ public class FinTransactionService {
         AppUser appUser = appUserService.getOneUser(auth.getName());
 
         FinTransaction oldFinTransaction = finTransactionRepository.findByIdAndAppUser_Email(id, appUser.getEmail())
-                .orElseThrow(()->new NotFoundException("transaction with id %s for user %s".formatted(id,appUser.getEmail())));
+                .orElseThrow(()->new NotFoundException("Error Deleting transaction with id %s for user %s".formatted(id,appUser.getEmail())));
 
         finTransactionRepository.deleteById(id);
 
