@@ -27,7 +27,7 @@ public class FinTransaction {
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private int amount;
+    private double amount;
 
     private String description;
 

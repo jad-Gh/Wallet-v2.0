@@ -37,6 +37,12 @@ public class FinTransactionService {
             finTransaction.setAppUser(appUser);
             finTransaction.setFinCategory(finCategory);
 
+            if (finCategory.isExpense()){
+                finTransaction.setAmount( - Math.abs(finTransaction.getAmount()));
+            } else {
+                finTransaction.setAmount( Math.abs(finTransaction.getAmount()));
+            }
+
             finTransactionRepository.save(finTransaction);
 
         }catch(Exception e){
@@ -57,8 +63,13 @@ public class FinTransactionService {
             FinCategory finCategory = finCategoryService.getCategoryByIdAndUser(finTransaction.getFinCategory().getId(), appUser.getEmail());
 
             oldFinTransaction.setFinCategory(finCategory);
-            oldFinTransaction.setAmount(finTransaction.getAmount());
             oldFinTransaction.setDescription(finTransaction.getDescription());
+
+            if (finCategory.isExpense()){
+                oldFinTransaction.setAmount( - Math.abs(finTransaction.getAmount()));
+            } else {
+                oldFinTransaction.setAmount( Math.abs(finTransaction.getAmount()));
+            }
 
             finTransactionRepository.save(oldFinTransaction);
 
