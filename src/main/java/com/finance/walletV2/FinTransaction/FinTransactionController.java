@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -22,6 +23,21 @@ public class FinTransactionController {
                                                         )
     {
         Map<String,Object> result = finTransactionService.getTransactions(page,size);
+        return ResponseEntity.ok().body(
+                CustomResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Success")
+                        .data(result)
+                        .build()
+        );
+    }
+
+    @GetMapping(path = "/kpis")
+    public ResponseEntity<CustomResponse> getTransactionKpis(){
+        Map<String,Object> result = new HashMap<>();
+        result.put("data",finTransactionService.getTransactionKpi());
         return ResponseEntity.ok().body(
                 CustomResponse.builder()
                         .timestamp(LocalDateTime.now())

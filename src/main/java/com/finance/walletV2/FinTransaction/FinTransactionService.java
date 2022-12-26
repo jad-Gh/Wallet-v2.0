@@ -94,8 +94,14 @@ public class FinTransactionService {
         result.put("data",data.getContent());
 
         return result;
+    }
 
+    public KpiRepresentation getTransactionKpi(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        AppUser appUser = appUserService.getOneUser(auth.getName());
 
+        KpiRepresentation kpiRepresentation = finTransactionRepository.getKpiRepresentation(appUser.getEmail());
+        return kpiRepresentation;
     }
 
     public void deleteTransaction(Long id){
