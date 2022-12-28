@@ -35,9 +35,9 @@ public class FinTransactionController {
     }
 
     @GetMapping(path = "/kpis")
-    public ResponseEntity<CustomResponse> getTransactionKpis(){
+    public ResponseEntity<CustomResponse> getTransactionKpis(@RequestParam(name = "id") Long id){
         Map<String,Object> result = new HashMap<>();
-        result.put("data",finTransactionService.getTransactionKpi());
+        result.put("data",finTransactionService.getTransactionKpi(id));
         return ResponseEntity.ok().body(
                 CustomResponse.builder()
                         .timestamp(LocalDateTime.now())

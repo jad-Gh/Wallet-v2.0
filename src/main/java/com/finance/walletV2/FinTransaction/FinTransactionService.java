@@ -96,15 +96,15 @@ public class FinTransactionService {
         return result;
     }
 
-    public KpiRepresentation getTransactionKpi(){
+    public KpiRepresentation getTransactionKpi(Long categoryId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AppUser appUser = appUserService.getOneUser(auth.getName());
 
-        KpiRepresentation kpiRepresentation = finTransactionRepository.getKpiRepresentation(appUser.getEmail());
+        KpiRepresentation kpiRepresentation = finTransactionRepository.getKpiRepresentation(appUser.getEmail(),categoryId);
         return kpiRepresentation;
     }
 
-    public void getTransactionKpiFilter(){
+    public void getAllTransactionKpi(){
 
     }
 
