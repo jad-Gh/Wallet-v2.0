@@ -17,7 +17,7 @@ public interface FinTransactionRepository extends JpaRepository<FinTransaction,L
     Optional<FinTransaction> findByIdAndAppUser_Email(Long id,String email);
 
     @Query(value = "SELECT new com.finance.walletV2.FinTransaction.KpiRepresentation(COALESCE(COUNT(f),0),COALESCE(SUM(f.amount),0)) FROM FinTransaction f WHERE f.appUser.email=?1 " +
-            "AND f.finCategory.id=?2"
+            "AND (?2 IS NULL OR f.finCategory.id=?2)"
     )
     KpiRepresentation getKpiRepresentation(String email,Long id);
 
