@@ -15,6 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,8 +49,8 @@ public class FinTransactionService {
             finTransactionRepository.save(finTransaction);
 
         }catch(Exception e){
-            log.error("Error Adding Transaction" + e.getMessage());
-            throw new RuntimeException("Error Adding Transaction"+ e.getLocalizedMessage());
+            log.error("Error Adding Transaction " + e.getMessage());
+            throw new RuntimeException("Error Adding Transaction "+ e.getLocalizedMessage());
         }
 
     }
@@ -96,11 +99,20 @@ public class FinTransactionService {
         return result;
     }
 
-    public KpiRepresentation getTransactionKpi(Long categoryId){
+    public KpiRepresentation getTransactionKpi(Long categoryId, LocalDate startDate,LocalDate endDate){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AppUser appUser = appUserService.getOneUser(auth.getName());
 
-        KpiRepresentation kpiRepresentation = finTransactionRepository.getKpiRepresentation(appUser.getEmail(),categoryId);
+        LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(0,0,0));
+        LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
+
+        if (end.isBefore(start)){
+            throw new IllegalStateException("Start Date has to be before end Date");
+        }
+
+        KpiRepresentation kpiRepresentation =
+                finTransactionRepository
+                .getKpiRepresentation(appUser.getEmail(),categoryId,start,end);
         return kpiRepresentation;
     }
 
