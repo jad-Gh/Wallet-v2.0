@@ -21,10 +21,15 @@ public class FinTransactionController {
 
     @GetMapping
     public ResponseEntity<CustomResponse> getTransactions(@RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "10") int size
+                                                        @RequestParam(defaultValue = "10") int size,
+                                                          @RequestParam(name = "startDate",defaultValue = "1970-01-01")
+                                                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                          @RequestParam(name = "endDate",defaultValue = "#{T(java.time.LocalDate).now()}")
+                                                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                                        @RequestParam(required = false) Long categoryId
                                                         )
     {
-        Map<String,Object> result = finTransactionService.getTransactions(page,size);
+        Map<String,Object> result = finTransactionService.getTransactions(page,size,startDate,endDate,categoryId);
         return ResponseEntity.ok().body(
                 CustomResponse.builder()
                         .timestamp(LocalDateTime.now())

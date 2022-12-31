@@ -7,6 +7,7 @@ import com.finance.walletV2.FinCategory.FinCategory;
 import com.finance.walletV2.FinCategory.FinCategoryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -82,11 +83,31 @@ public class FinTransactionService {
         }
     }
 
-    public Map<String,Object> getTransactions(int page, int size){
+    public Map<String,Object> getTransactions(int page, int size, LocalDate startDate,LocalDate endDate,Long categoryId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AppUser appUser = appUserService.getOneUser(auth.getName());
 
-        Page<FinTransaction> data = finTransactionRepository.findAllByAppUser_Email(appUser.getEmail(), PageRequest.of(page,size, Sort.by("createdAt").descending()));
+        LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(0,0,0));
+        LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
+
+        if (end.isBefore(start)){
+            throw new IllegalStateException("Start Date has to be before end Date");
+        }
+
+
+        Page<FinTransaction> data = categoryId==null ?
+                finTransactionRepository.findAllByAppUser_EmailAndCreatedAtBetween(
+                        appUser.getEmail(),
+                        start,
+                        end,
+                        PageRequest.of(page,size, Sort.by("createdAt").descending()))
+        :
+                finTransactionRepository.findAllByAppUser_EmailAndFinCategory_IdAndCreatedAtBetween(
+                appUser.getEmail(),
+                categoryId,
+                start,
+                end,
+                PageRequest.of(page,size, Sort.by("createdAt").descending()));
 
         Map<String,Object> result = new HashMap<>();
 

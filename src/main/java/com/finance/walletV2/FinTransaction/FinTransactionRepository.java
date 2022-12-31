@@ -15,13 +15,22 @@ import java.util.Optional;
 @Repository
 public interface FinTransactionRepository extends JpaRepository<FinTransaction,Long> {
 
-    Page<FinTransaction> findAllByAppUser_Email(String email,Pageable pageable);
+    Page<FinTransaction> findAllByAppUser_EmailAndFinCategory_IdAndCreatedAtBetween(String email,
+                                                                                    Long categoryId,
+                                                                                    LocalDateTime startDate,
+                                                                                    LocalDateTime endDate,
+                                                                                    Pageable pageable);
+
+    Page<FinTransaction> findAllByAppUser_EmailAndCreatedAtBetween(String email,
+                                                                   LocalDateTime startDate,
+                                                                   LocalDateTime endDate,
+                                                                   Pageable pageable);
 
     Optional<FinTransaction> findByIdAndAppUser_Email(Long id,String email);
 
     @Query(value = "SELECT new com.finance.walletV2.FinTransaction.KpiRepresentation(COALESCE(COUNT(f),0),COALESCE(SUM(f.amount),0)) " +
             "FROM FinTransaction f WHERE f.appUser.email=?1 " +
-            "AND (?2 IS NULL OR f.finCategory.id=?2) " +
+            "AND ( ?2 IS NULL OR f.finCategory.id=?2) " +
             "AND ( f.createdAt>=?3 ) " +
            "AND ( f.createdAt<=?4 )"
     )
