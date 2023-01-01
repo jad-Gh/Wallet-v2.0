@@ -83,31 +83,56 @@ public class FinTransactionService {
         }
     }
 
-    public Map<String,Object> getTransactions(int page, int size, LocalDate startDate,LocalDate endDate,Long categoryId){
+    public Map<String,Object> getTransactions(int page, int size, LocalDate startDate,LocalDate endDate,Long categoryId,int sortFilter){
+        //GET current user
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AppUser appUser = appUserService.getOneUser(auth.getName());
-
+        //convert localDate to localDateTime
         LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(0,0,0));
         LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
-
+        //check valid date
         if (end.isBefore(start)){
             throw new IllegalStateException("Start Date has to be before end Date");
         }
-
+        //generate appropriate sort by filter
+        String[] sortFilters = {"createdAt ASC","createdAt DSC","amount ASC","amount DSC"};
+        String selectedFilter = sortFilters[sortFilter - 1];
 
         Page<FinTransaction> data = categoryId==null ?
                 finTransactionRepository.findAllByAppUser_EmailAndCreatedAtBetween(
                         appUser.getEmail(),
                         start,
                         end,
-                        PageRequest.of(page,size, Sort.by("createdAt").descending()))
+                        PageRequest.of(
+                                page,
+                                size,
+//                                Sort.by("createdAt").descending()
+                                 Sort.by(selectedFilter.split(" ")[1].equals("ASC") ?
+                                        Sort.Direction.ASC :
+                                        Sort.Direction.DESC
+                                        ,
+                                        selectedFilter.split(" ")[0]
+                                        )
+                        )
+                )
         :
                 finTransactionRepository.findAllByAppUser_EmailAndFinCategory_IdAndCreatedAtBetween(
                 appUser.getEmail(),
                 categoryId,
                 start,
                 end,
-                PageRequest.of(page,size, Sort.by("createdAt").descending()));
+                PageRequest.of(
+                        page,
+                        size,
+                        //Sort.by("createdAt").descending()
+                        Sort.by(selectedFilter.split(" ")[1].equals("ASC") ?
+                                        Sort.Direction.ASC :
+                                        Sort.Direction.DESC
+                                ,
+                                selectedFilter.split(" ")[0]
+                        )
+                )
+                );
 
         Map<String,Object> result = new HashMap<>();
 

@@ -26,10 +26,11 @@ public class FinTransactionController {
                                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                           @RequestParam(name = "endDate",defaultValue = "#{T(java.time.LocalDate).now()}")
                                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                                                        @RequestParam(required = false) Long categoryId
+                                                        @RequestParam(required = false) Long categoryId,
+                                                          @RequestParam(defaultValue = "1") int orderBy
                                                         )
     {
-        Map<String,Object> result = finTransactionService.getTransactions(page,size,startDate,endDate,categoryId);
+        Map<String,Object> result = finTransactionService.getTransactions(page,size,startDate,endDate,categoryId,orderBy);
         return ResponseEntity.ok().body(
                 CustomResponse.builder()
                         .timestamp(LocalDateTime.now())
