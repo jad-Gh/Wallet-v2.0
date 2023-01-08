@@ -45,9 +45,30 @@ public interface FinTransactionRepository extends JpaRepository<FinTransaction,L
             "AND ( f.createdAt<=?4 ) " +
             "GROUP BY function('to_char',f.createdAt,'YYYY') "+
             "ORDER BY function('to_char',f.createdAt,'YYYY') ASC"
-
     )
-    List<ChartRepresentation> getChartRepresentation(String email, Long id, LocalDateTime startDate, LocalDateTime endDate,String groupBy);
+    List<ChartRepresentation> getChartRepresentationYear(String email, Long id, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query(value = "SELECT new com.finance.walletV2.FinTransaction.ChartRepresentation" +
+            "(function('to_char',f.createdAt,'YYYY-MM'),COUNT(f),SUM(f.amount))" +
+            "FROM FinTransaction f WHERE f.appUser.email=?1 " +
+            "AND ( ?2 IS NULL OR f.finCategory.id=?2) " +
+            "AND ( f.createdAt>=?3 ) " +
+            "AND ( f.createdAt<=?4 ) " +
+            "GROUP BY function('to_char',f.createdAt,'YYYY-MM') "+
+            "ORDER BY function('to_char',f.createdAt,'YYYY-MM') ASC"
+    )
+    List<ChartRepresentation> getChartRepresentationMonth(String email, Long id, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query(value = "SELECT new com.finance.walletV2.FinTransaction.ChartRepresentation" +
+            "(function('to_char',f.createdAt,'YYYY-MM-DD'),COUNT(f),SUM(f.amount))" +
+            "FROM FinTransaction f WHERE f.appUser.email=?1 " +
+            "AND ( ?2 IS NULL OR f.finCategory.id=?2) " +
+            "AND ( f.createdAt>=?3 ) " +
+            "AND ( f.createdAt<=?4 ) " +
+            "GROUP BY function('to_char',f.createdAt,'YYYY-MM-DD') "+
+            "ORDER BY function('to_char',f.createdAt,'YYYY-MM-DD') ASC"
+    )
+    List<ChartRepresentation> getChartRepresentationDay(String email, Long id, LocalDateTime startDate, LocalDateTime endDate);
 
 
 

@@ -174,24 +174,19 @@ public class FinTransactionService {
             throw new IllegalStateException("Start Date has to be before end Date");
         }
 
-        String groupBy;
-
-        switch (periodical){
-            case "DAY":
-                groupBy= "YYYY-MM-DD";
-                break;
-            case "MONTH":
-                groupBy= "YYYY-MM";
-                break;
-            default:
-                groupBy= "YYYY";
-
-        }
-
-        List<ChartRepresentation> result = finTransactionRepository.getChartRepresentation(
-                appUser.getEmail(),categoryId,start,end,groupBy
-        );
-
+        List<ChartRepresentation> result = periodical.equals("DAY") ?
+                finTransactionRepository.getChartRepresentationDay(
+                appUser.getEmail(),categoryId,start,end
+                )
+                :
+                periodical.equals("MONTH") ?
+                        finTransactionRepository.getChartRepresentationMonth(
+                                appUser.getEmail(),categoryId,start,end
+                        )
+                        :
+                        finTransactionRepository.getChartRepresentationYear(
+                                appUser.getEmail(),categoryId,start,end
+                        );
         return result;
     }
 
