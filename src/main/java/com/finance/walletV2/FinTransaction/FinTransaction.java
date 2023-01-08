@@ -24,6 +24,7 @@ public class FinTransaction {
     @CreationTimestamp
     @Column(updatable = false)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
     private LocalDateTime createdAt;
 
     @Column(nullable = false)

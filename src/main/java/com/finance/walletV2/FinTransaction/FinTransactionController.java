@@ -62,6 +62,27 @@ public class FinTransactionController {
         );
     }
 
+    @GetMapping(path = "/charts")
+    public ResponseEntity<CustomResponse> getTransactionCharts(@RequestParam(name = "id",required = false) Long categoryId,
+                                                             @RequestParam(name = "startDate",defaultValue = "1970-01-01")
+                                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                             @RequestParam(name = "endDate",defaultValue = "#{T(java.time.LocalDate).now()}")
+                                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                                               @RequestParam(name="periodical",defaultValue = "YEAR") String periodical
+    ){
+        Map<String,Object> result = new HashMap<>();
+        result.put("data",finTransactionService.getTransactionChart(categoryId,startDate,endDate,periodical));
+        return ResponseEntity.ok().body(
+                CustomResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Success")
+                        .data(result)
+                        .build()
+        );
+    }
+
     @PostMapping
     public ResponseEntity<CustomResponse> addTransaction(@RequestBody FinTransaction finTransaction){
         finTransactionService.addTransaction(finTransaction);

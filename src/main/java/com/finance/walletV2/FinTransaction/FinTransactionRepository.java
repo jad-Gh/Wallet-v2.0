@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -32,8 +33,22 @@ public interface FinTransactionRepository extends JpaRepository<FinTransaction,L
             "FROM FinTransaction f WHERE f.appUser.email=?1 " +
             "AND ( ?2 IS NULL OR f.finCategory.id=?2) " +
             "AND ( f.createdAt>=?3 ) " +
-           "AND ( f.createdAt<=?4 )"
+           "AND ( f.createdAt<=?4 ) "
     )
     KpiRepresentation getKpiRepresentation(String email, Long id, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query(value = "SELECT new com.finance.walletV2.FinTransaction.ChartRepresentation" +
+            "(function('to_char',f.createdAt,'YYYY'),COUNT(f),SUM(f.amount))" +
+            "FROM FinTransaction f WHERE f.appUser.email=?1 " +
+            "AND ( ?2 IS NULL OR f.finCategory.id=?2) " +
+            "AND ( f.createdAt>=?3 ) " +
+            "AND ( f.createdAt<=?4 ) " +
+            "GROUP BY function('to_char',f.createdAt,'YYYY') "+
+            "ORDER BY function('to_char',f.createdAt,'YYYY') ASC"
+
+    )
+    List<ChartRepresentation> getChartRepresentation(String email, Long id, LocalDateTime startDate, LocalDateTime endDate,String groupBy);
+
+
 
 }

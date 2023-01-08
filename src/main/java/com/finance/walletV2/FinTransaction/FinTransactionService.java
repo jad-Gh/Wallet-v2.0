@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -162,8 +163,36 @@ public class FinTransactionService {
         return kpiRepresentation;
     }
 
-    public void getAllTransactionKpi(){
+    public List<ChartRepresentation> getTransactionChart(Long categoryId, LocalDate startDate, LocalDate endDate, String periodical){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        AppUser appUser = appUserService.getOneUser(auth.getName());
 
+        LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(0,0,0));
+        LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
+
+        if (end.isBefore(start)){
+            throw new IllegalStateException("Start Date has to be before end Date");
+        }
+
+        String groupBy;
+
+        switch (periodical){
+            case "DAY":
+                groupBy= "YYYY-MM-DD";
+                break;
+            case "MONTH":
+                groupBy= "YYYY-MM";
+                break;
+            default:
+                groupBy= "YYYY";
+
+        }
+
+        List<ChartRepresentation> result = finTransactionRepository.getChartRepresentation(
+                appUser.getEmail(),categoryId,start,end,groupBy
+        );
+
+        return result;
     }
 
     public void deleteTransaction(Long id){
