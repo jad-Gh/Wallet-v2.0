@@ -2,6 +2,8 @@ package com.finance.walletV2.FinConversion;
 
 import com.finance.walletV2.AppUser.AppUser;
 import com.finance.walletV2.AppUser.AppUserService;
+import com.finance.walletV2.FinTransaction.ChartRepresentation;
+import com.finance.walletV2.FinTransaction.KpiRepresentation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -76,6 +79,50 @@ public class FinConversionService {
             log.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    public KpiRepresentation getConversionKpi(LocalDate startDate, LocalDate endDate){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        AppUser appUser = appUserService.getOneUser(auth.getName());
+
+        LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(0,0,0));
+        LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
+
+        if (end.isBefore(start)){
+            throw new IllegalStateException("Start Date has to be before end Date");
+        }
+
+        KpiRepresentation kpiRepresentation =
+                finConversionRepository
+                        .getKpiRepresentation(appUser.getEmail(),start,end);
+        return kpiRepresentation;
+    }
+
+    public List<ChartRepresentation> getConversionChart( LocalDate startDate, LocalDate endDate, String periodical){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        AppUser appUser = appUserService.getOneUser(auth.getName());
+
+        LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(0,0,0));
+        LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
+
+        if (end.isBefore(start)){
+            throw new IllegalStateException("Start Date has to be before end Date");
+        }
+
+        List<ChartRepresentation> result = periodical.equals("DAY") ?
+                finConversionRepository.getChartRepresentationDay(
+                        appUser.getEmail(),start,end
+                )
+                :
+                periodical.equals("MONTH") ?
+                        finConversionRepository.getChartRepresentationMonth(
+                                appUser.getEmail(),start,end
+                        )
+                        :
+                        finConversionRepository.getChartRepresentationYear(
+                                appUser.getEmail(),start,end
+                        );
+        return result;
     }
 
 

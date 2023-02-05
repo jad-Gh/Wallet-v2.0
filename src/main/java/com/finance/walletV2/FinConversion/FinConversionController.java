@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -56,6 +57,47 @@ public class FinConversionController {
     )
     {
         Map<String,Object> result = finConversionService.getConversions(startDate,endDate,page,size);
+        return ResponseEntity.ok().body(
+                CustomResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Success")
+                        .data(result)
+                        .build()
+        );
+    }
+
+    @GetMapping(path = "/kpis")
+    public ResponseEntity<CustomResponse> getConversionKpis(
+                                                             @RequestParam(name = "startDate",defaultValue = "1970-01-01")
+                                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                             @RequestParam(name = "endDate",defaultValue = "#{T(java.time.LocalDate).now()}")
+                                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ){
+        Map<String,Object> result = new HashMap<>();
+        result.put("data",finConversionService.getConversionKpi(startDate,endDate));
+        return ResponseEntity.ok().body(
+                CustomResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Success")
+                        .data(result)
+                        .build()
+        );
+    }
+
+    @GetMapping(path = "/charts")
+    public ResponseEntity<CustomResponse> getConversionCharts(
+                                                               @RequestParam(name = "startDate",defaultValue = "1970-01-01")
+                                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                               @RequestParam(name = "endDate",defaultValue = "#{T(java.time.LocalDate).now()}")
+                                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                                               @RequestParam(name="periodical",defaultValue = "YEAR") String periodical
+    ){
+        Map<String,Object> result = new HashMap<>();
+        result.put("data",finConversionService.getConversionChart(startDate,endDate,periodical));
         return ResponseEntity.ok().body(
                 CustomResponse.builder()
                         .timestamp(LocalDateTime.now())
