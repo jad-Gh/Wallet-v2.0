@@ -58,6 +58,10 @@ public interface FinConversionRepository extends JpaRepository<FinConversion,Lon
     )
     List<ChartRepresentation> getChartRepresentationDay(String email, LocalDateTime startDate, LocalDateTime endDate);
 
+    @Query(value = "SELECT f FROM FinConversion f WHERE f.createdAt=" +
+            "(SELECT min(f2.createdAt) FROM FinConversion f2 WHERE f2.remainingLBP>0)")
+    FinConversion getActiveConversion(String email);
+
 
 
 }
