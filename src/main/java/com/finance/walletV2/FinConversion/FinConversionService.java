@@ -40,7 +40,7 @@ public class FinConversionService {
                 appUser.getEmail(),
                 start,
                 end,
-                PageRequest.of(page,size , Sort.by("createdAt").ascending())
+                PageRequest.of(page,size , Sort.by("createdAt").descending())
                 );
 
         Map<String,Object> result = new HashMap<>();
@@ -123,6 +123,23 @@ public class FinConversionService {
                                 appUser.getEmail(),start,end
                         );
         return result;
+    }
+
+    public FinConversion getActiveConversion(String uerEmail){
+        return finConversionRepository.getActiveConversion(uerEmail);
+    }
+
+    public long getRemainingLBPSum(String uerEmail){
+        return finConversionRepository.getSumRemainingLBP(uerEmail);
+    }
+
+    public void updateConversionRemainingBalance(FinConversion finConversion){
+        FinConversion oldConv = finConversionRepository.findById(finConversion.getId()).orElseThrow(
+                ()->new NotFoundException("Conversion not found id: "+finConversion.getId()));
+
+        oldConv.setRemainingLBP(finConversion.getRemainingLBP());
+
+        finConversionRepository.save(oldConv);
     }
 
 

@@ -62,6 +62,11 @@ public interface FinConversionRepository extends JpaRepository<FinConversion,Lon
             "(SELECT min(f2.createdAt) FROM FinConversion f2 WHERE f2.remainingLBP>0)")
     FinConversion getActiveConversion(String email);
 
+    @Query(value = "SELECT sum(f.remainingLBP) FROM FinConversion f")
+    long getSumRemainingLBP(String email);
+
+
+
 
 
 }

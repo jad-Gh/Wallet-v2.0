@@ -96,6 +96,19 @@ public class FinTransactionController {
         );
     }
 
+    @PostMapping(path = "/lbp")
+    public ResponseEntity<CustomResponse> addLBPTransaction(@RequestBody FinTransaction finTransaction){
+        finTransactionService.addLbpTransaction(finTransaction);
+        return ResponseEntity.ok().body(
+                CustomResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Successfully added")
+                        .build()
+        );
+    }
+
     @PutMapping
     public ResponseEntity<CustomResponse> updateTransaction(@RequestBody FinTransaction finTransaction){
         finTransactionService.updateTransaction(finTransaction);

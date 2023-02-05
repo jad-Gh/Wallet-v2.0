@@ -5,6 +5,8 @@ import com.finance.walletV2.AppUser.AppUserRepository;
 import com.finance.walletV2.AppUser.AppUserService;
 import com.finance.walletV2.FinCategory.FinCategory;
 import com.finance.walletV2.FinCategory.FinCategoryService;
+import com.finance.walletV2.FinConversion.FinConversion;
+import com.finance.walletV2.FinConversion.FinConversionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.Local;
@@ -31,6 +33,7 @@ public class FinTransactionService {
     private final FinTransactionRepository finTransactionRepository;
     private final AppUserService appUserService;
     private final FinCategoryService finCategoryService;
+    private final FinConversionService finConversionService;
 
     public void addTransaction(FinTransaction finTransaction){
         try{
@@ -54,6 +57,46 @@ public class FinTransactionService {
             log.error("Error Adding Transaction " + e.getMessage());
             throw new RuntimeException("Error Adding Transaction "+ e.getLocalizedMessage());
         }
+
+    }
+
+    public void addLbpTransaction(FinTransaction finTransaction){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        AppUser appUser = appUserService.getOneUser(auth.getName());
+
+        long remainingSumLBP = finConversionService.getRemainingLBPSum(appUser.getEmail());
+
+        double amountLbpBeingProcessed = finTransaction.getAmount();
+        double amountUsdBeingProcessed = 0;
+
+        if (remainingSumLBP < finTransaction.getAmount()){
+            throw new RuntimeException("Transaction Failed: Insufficient Balance");
+        } else {
+            while (amountLbpBeingProcessed > 0){
+                FinConversion activeConversion = finConversionService.getActiveConversion(appUser.getEmail());
+
+                if (amountLbpBeingProcessed > activeConversion.getRemainingLBP()){
+                    amountUsdBeingProcessed = amountUsdBeingProcessed
+                            +
+                            ((activeConversion.getRemainingLBP()) / activeConversion.getRate());
+
+                    amountLbpBeingProcessed = amountLbpBeingProcessed - activeConversion.getRemainingLBP();
+
+                    activeConversion.setRemainingLBP(0);
+
+                } else {
+                    amountUsdBeingProcessed = amountUsdBeingProcessed + (amountLbpBeingProcessed / activeConversion.getRate());
+                    finTransaction.setAmount(amountUsdBeingProcessed);
+                    activeConversion.setRemainingLBP(activeConversion.getRemainingLBP() - amountLbpBeingProcessed);
+                    amountLbpBeingProcessed = 0;
+                }
+
+                finConversionService.updateConversionRemainingBalance(activeConversion);
+
+            }
+            addTransaction(finTransaction);
+        }
+
 
     }
 
