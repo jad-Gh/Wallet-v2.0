@@ -68,6 +68,8 @@ public class FinCategoryService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AppUser appUser = appUserService.getOneUser(auth.getName());
 
+        log.info(auth.getAuthorities().toString());
+
         Map<String,Object> result = new HashMap<>();
 
         Page<FinCategory> data = finCategoryRepository.findAllByNameIgnoreCaseContainingAndAppUser_Email(

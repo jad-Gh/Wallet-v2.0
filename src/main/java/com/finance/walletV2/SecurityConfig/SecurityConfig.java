@@ -55,9 +55,9 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests( auth -> auth
-                        .requestMatchers("/login","/user").permitAll()
+                        .requestMatchers("/login").permitAll()
                         .requestMatchers("/swagger-ui/**","/v3/api-docs/swagger-config","/v3/api-docs").permitAll()
-                        //.requestMatchers("/user").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers("/user/**").hasAnyAuthority("SCOPE_ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
