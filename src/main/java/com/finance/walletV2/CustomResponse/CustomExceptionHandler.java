@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,10 +25,23 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<CustomResponse> handleAll(Exception ex, WebRequest request){
-        return ResponseEntity.ok().body(
+        return ResponseEntity.internalServerError().body(
                 CustomResponse.builder()
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                        .timestamp(LocalDateTime.now())
+                        .message(ex.getLocalizedMessage())
+                        .errors(List.of(ex.getMessage()))
+                        .build()
+        );
+    }
+
+    @ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<CustomResponse> BadCredentialsException(Exception ex, WebRequest request){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                CustomResponse.builder()
+                        .status(HttpStatus.UNAUTHORIZED)
+                        .statusCode(HttpStatus.UNAUTHORIZED.value())
                         .timestamp(LocalDateTime.now())
                         .message(ex.getLocalizedMessage())
                         .errors(List.of(ex.getMessage()))
