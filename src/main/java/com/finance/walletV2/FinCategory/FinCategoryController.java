@@ -1,6 +1,7 @@
 package com.finance.walletV2.FinCategory;
 
 import com.finance.walletV2.CustomResponse.CustomResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class FinCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomResponse> addCategory(@RequestBody FinCategory finCategory){
+    public ResponseEntity<CustomResponse> addCategory(@RequestBody @Valid FinCategory finCategory){
         finCategoryService.addCategory(finCategory);
         return ResponseEntity.ok().body(
                 CustomResponse.builder()
@@ -47,7 +48,7 @@ public class FinCategoryController {
     }
 
     @PutMapping
-    public ResponseEntity<CustomResponse> updateCategory(@RequestBody FinCategory finCategory){
+    public ResponseEntity<CustomResponse> updateCategory(@RequestBody @Valid FinCategory finCategory){
         finCategoryService.updateCategory(finCategory);
         return ResponseEntity.ok().body(
                 CustomResponse.builder()

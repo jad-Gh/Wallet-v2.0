@@ -34,7 +34,7 @@ public class FinCategoryService {
             finCategoryRepository.save(finCategory);
         }catch(Exception e){
             log.error("Error Adding Category" + e.getMessage());
-            throw new RuntimeException("Error Adding Category"+ e.getLocalizedMessage());
+            throw new RuntimeException("Error Adding Category "+ e.getLocalizedMessage());
         }
     }
 
@@ -55,7 +55,7 @@ public class FinCategoryService {
                 finCategoryRepository.save(OldCategory);
             }catch(Exception e){
                 log.error("Error Updating Category" + e.getMessage());
-                throw new RuntimeException("Error Updating Category"+ e.getLocalizedMessage());
+                throw new RuntimeException("Error Updating Category "+ e.getLocalizedMessage());
             }
         } else {
             log.error("Category Does not belong to User " + appUser.getEmail());
