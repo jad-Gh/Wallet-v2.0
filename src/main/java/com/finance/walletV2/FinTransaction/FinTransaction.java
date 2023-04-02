@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.finance.walletV2.AppUser.AppUser;
 import com.finance.walletV2.FinCategory.FinCategory;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class FinTransaction {
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
+    @Min(0)
     private double amount;
 
     private String description;
