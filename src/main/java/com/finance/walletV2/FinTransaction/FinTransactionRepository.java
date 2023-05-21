@@ -70,6 +70,17 @@ public interface FinTransactionRepository extends JpaRepository<FinTransaction,L
     )
     List<ChartRepresentation> getChartRepresentationDay(String email, Long id, LocalDateTime startDate, LocalDateTime endDate);
 
+    @Query(value = "SELECT new com.finance.walletV2.FinTransaction.ChartRepresentationByCategory" +
+            "(f.finCategory.name,COUNT(f),SUM(f.amount))" +
+            "FROM FinTransaction f WHERE f.appUser.email=?1 " +
+            "AND ( ?2 IS NULL OR f.finCategory.id=?2) " +
+            "AND ( f.createdAt>=?3 ) " +
+            "AND ( f.createdAt<=?4 ) " +
+            "GROUP BY f.finCategory.name"
+    )
+    List<ChartRepresentationByCategory> getChartRepresentationCategory(String email, Long id, LocalDateTime startDate, LocalDateTime endDate);
+
+
 
 
 }

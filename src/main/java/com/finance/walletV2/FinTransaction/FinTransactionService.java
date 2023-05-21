@@ -233,6 +233,23 @@ public class FinTransactionService {
         return result;
     }
 
+    public List<ChartRepresentationByCategory> getTransactionChartByCategory(Long categoryId, LocalDate startDate, LocalDate endDate){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        AppUser appUser = appUserService.getOneUser(auth.getName());
+
+        LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(0,0,0));
+        LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
+
+        if (end.isBefore(start)){
+            throw new IllegalStateException("Start Date has to be before end Date");
+        }
+
+        List<ChartRepresentationByCategory> result = finTransactionRepository
+                .getChartRepresentationCategory(appUser.getEmail(),categoryId,start,end);
+
+        return result;
+    }
+
     public void deleteTransaction(Long id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AppUser appUser = appUserService.getOneUser(auth.getName());
