@@ -60,10 +60,11 @@ public class SecurityConfig {
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
-                .authorizeRequests( auth -> auth
+                .authorizeHttpRequests( auth -> auth
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/swagger-ui/**","/v3/api-docs/swagger-config","/v3/api-docs").permitAll()
                         .requestMatchers("/user/**").hasAnyAuthority("SCOPE_ROLE_ADMIN")
+                        .requestMatchers("/asset/**").hasAnyAuthority("SCOPE_ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
