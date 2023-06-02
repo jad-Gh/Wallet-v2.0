@@ -60,8 +60,8 @@ public class AssetController {
                 .build());
     }
 
-    @PutMapping(path = "/{id}")
-    public ResponseEntity<CustomResponse> updateAsset(@PathVariable Long id){
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<CustomResponse> deleteAsset(@PathVariable Long id){
 
         assetService.deleteAsset(id);
 
@@ -71,5 +71,18 @@ public class AssetController {
                 .statusCode(HttpStatus.OK.value())
                 .timestamp(LocalDateTime.now())
                 .build());
+    }
+
+    @GetMapping(path = "/gold-price/{id}")
+    public ResponseEntity<CustomResponse> updateAssetGoldPrice(@PathVariable Long id){
+        assetService.updateGoldPrice(id);
+
+        return ResponseEntity.ok().body(CustomResponse.builder()
+                .message("Asset Gold price updated successfully")
+                .status(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .build());
+
     }
 }
