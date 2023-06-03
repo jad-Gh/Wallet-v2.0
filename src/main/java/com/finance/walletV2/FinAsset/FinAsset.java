@@ -3,6 +3,7 @@ package com.finance.walletV2.FinAsset;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.finance.walletV2.AppUser.AppUser;
+import com.finance.walletV2.Asset.Asset;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -26,17 +27,7 @@ public class FinAsset {
     @Min(value = 0, message = "Price Bought can't be less than zero")
     private double priceBought;
 
-    @Min(value = 0, message = "Price Current can't be less than zero")
-    private double priceCurrent;
-
-    @Column(nullable = false)
-    @Size(min = 1, message = "Name can't be less than 1 character")
-    private String name;
-
     private String description;
-
-    @Transient
-    private double profit;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -45,4 +36,8 @@ public class FinAsset {
     @JoinColumn()
     @JsonIgnore
     private AppUser appUser;
+
+    @ManyToOne
+    @JoinColumn
+    private Asset asset;
 }
