@@ -4,6 +4,10 @@ import com.finance.walletV2.AppUser.AppUser;
 import com.finance.walletV2.AppUser.AppUserService;
 import com.finance.walletV2.Asset.Asset;
 import com.finance.walletV2.Asset.AssetRepository;
+import com.finance.walletV2.FinTransaction.ChartRepresentationByCategory;
+import com.finance.walletV2.FinTransaction.FinTransactionRepository;
+import com.finance.walletV2.FinTransaction.FinTransactionService;
+import com.finance.walletV2.FinTransaction.KpiRepresentation;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,7 +18,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -23,6 +31,7 @@ public class FinAssetService {
 
     private final FinAssetRepository finAssetRepository;
     private final AssetRepository assetRepository;
+    private final FinTransactionService finTransactionService;
     private final AppUserService appUserService;
 
     public Map<String,Object> getFinAssets(int page,int size){
@@ -67,7 +76,7 @@ public class FinAssetService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AppUser appUser = appUserService.getOneUser(auth.getName());
 
-        FinAsset finAssetToEdit = finAssetRepository.findByIdAndAppUser_Email(finAsset.getAsset().getId(), appUser.getEmail())
+        FinAsset finAssetToEdit = finAssetRepository.findByIdAndAppUser_Email(finAsset.getId(), appUser.getEmail())
                 .orElseThrow(()->
                         new NotFoundException("Financial Asset not found")
                 );
@@ -94,6 +103,46 @@ public class FinAssetService {
                 );
 
         finAssetRepository.deleteById(finAssetToDelete.getId());
+    }
+
+    public KpiRepresentation getFinAssetKpis(LocalDate startDate, LocalDate endDate){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        AppUser appUser = appUserService.getOneUser(auth.getName());
+
+        LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(0,0,0));
+        LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
+
+        return finAssetRepository.findKpiRepresentation(appUser.getEmail(),start,end);
+    }
+
+    public List<ChartRepresentationByCategory> getFinAssetChart(LocalDate startDate, LocalDate endDate){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        AppUser appUser = appUserService.getOneUser(auth.getName());
+
+        LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(0,0,0));
+        LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
+
+        return finAssetRepository.findChartRepresentation(appUser.getEmail(),start,end);
+    }
+
+    public Map<String,Object> getAccountTotalBalance(LocalDate startDate, LocalDate endDate){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        AppUser appUser = appUserService.getOneUser(auth.getName());
+
+        LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(0,0,0));
+        LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
+
+        KpiRepresentation assetBalance = finAssetRepository.findKpiRepresentation(appUser.getEmail(),start,end);
+        KpiRepresentation transactionBalance = finTransactionService.getTransactionKpi(null,startDate,endDate);
+
+        Map<String,Object> result = new HashMap<>();
+
+        result.put("Transactions",transactionBalance.getTotalVolume());
+        result.put("Assets",assetBalance.getTotalVolume());
+        result.put("Total",assetBalance.getTotalVolume() + transactionBalance.getTotalVolume());
+
+        return result;
+
     }
 
 }

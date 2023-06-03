@@ -5,17 +5,19 @@ import com.finance.walletV2.Asset.AssetService;
 import com.finance.walletV2.CustomResponse.CustomResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(path = "/asset")
+@RequestMapping(path = "/financial-asset")
 @AllArgsConstructor
 public class FinAssetController {
 
@@ -71,6 +73,66 @@ public class FinAssetController {
                 .timestamp(LocalDateTime.now())
                 .build());
     }
+
+    @GetMapping(path = "/kpi")
+    public ResponseEntity<CustomResponse> getFinAssetKpis(
+            @RequestParam(name = "startDate",defaultValue = "1970-01-01")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(name = "endDate",defaultValue = "#{T(java.time.LocalDate).now()}")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ){
+
+        Map<String,Object> result = new HashMap<>();
+        result.put("data",finAssetService.getFinAssetKpis(startDate,endDate));
+
+        return ResponseEntity.ok().body(CustomResponse.builder()
+                .message("Fin Asset KPI fetch successful")
+                .status(HttpStatus.OK)
+                .data(result)
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .build());
+    }
+
+    @GetMapping(path = "/chart")
+    public ResponseEntity<CustomResponse> getFinAssetChart(
+            @RequestParam(name = "startDate",defaultValue = "1970-01-01")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(name = "endDate",defaultValue = "#{T(java.time.LocalDate).now()}")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ){
+
+        Map<String,Object> result = new HashMap<>();
+        result.put("data",finAssetService.getFinAssetChart(startDate,endDate));
+
+        return ResponseEntity.ok().body(CustomResponse.builder()
+                .message("Fin Asset Chart fetch successful")
+                .status(HttpStatus.OK)
+                .data(result)
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .build());
+    }
+
+    @GetMapping(path = "/total-balance")
+    public ResponseEntity<CustomResponse> getTotalBalance(
+            @RequestParam(name = "startDate",defaultValue = "1970-01-01")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(name = "endDate",defaultValue = "#{T(java.time.LocalDate).now()}")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ){
+
+        return ResponseEntity.ok().body(CustomResponse.builder()
+                .message("Fin Asset Chart fetch successful")
+                .status(HttpStatus.OK)
+                .data(finAssetService.getAccountTotalBalance(startDate,endDate))
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .build());
+    }
+
+
+
 
 }
 
