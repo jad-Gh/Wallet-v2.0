@@ -20,23 +20,23 @@ public interface FinAssetRepository extends JpaRepository<FinAsset,Long> {
     Optional<FinAsset> findByIdAndAppUser_Email(Long id,String email);
 
 
-    @Query(value = "Select new com.finance.walletV2.FinTransaction.KpiRepresentation(" +
-            "COUNT(f),SUM(f.asset.priceCurrent)) " +
+    @Query(value = "Select new com.finance.walletV2.FinAsset.KpiRepresentationAsset(" +
+            "COUNT(f),SUM(f.asset.priceCurrent),SUM(f.asset.priceCurrent - f.priceBought)) " +
             "FROM FinAsset f " +
             "WHERE f.appUser.email = ?1 " +
             "AND f.createdAt >=?2 " +
             "AND f.createdAt <=?3"
     )
-    KpiRepresentation findKpiRepresentation(String email, LocalDateTime startDate, LocalDateTime endDate);
+    KpiRepresentationAsset findKpiRepresentation(String email, LocalDateTime startDate, LocalDateTime endDate);
 
-    @Query(value = "Select new com.finance.walletV2.FinTransaction.ChartRepresentationByCategory(" +
-            "f.asset.name,COUNT(f),SUM(f.asset.priceCurrent)) " +
+    @Query(value = "Select new com.finance.walletV2.FinAsset.ChartRepresentationAsset(" +
+            "f.asset.name,COUNT(f),SUM(f.asset.priceCurrent),SUM(f.asset.priceCurrent - f.priceBought)) " +
             "FROM FinAsset f " +
             "WHERE f.appUser.email = ?1 " +
             "AND f.createdAt >=?2 " +
             "AND f.createdAt <=?3 " +
             "GROUP BY f.asset.name")
-    List<ChartRepresentationByCategory> findChartRepresentation(String email, LocalDateTime startDate, LocalDateTime endDate);
+    List<ChartRepresentationAsset> findChartRepresentation(String email, LocalDateTime startDate, LocalDateTime endDate);
 
 
 }

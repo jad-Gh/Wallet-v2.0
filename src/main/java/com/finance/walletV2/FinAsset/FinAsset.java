@@ -29,6 +29,9 @@ public class FinAsset {
 
     private String description;
 
+    @Transient
+    private double profit;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -40,4 +43,9 @@ public class FinAsset {
     @ManyToOne
     @JoinColumn
     private Asset asset;
+
+    @PostLoad
+    public void setProfit(){
+        this.profit = this.asset.getPriceCurrent() - this.priceBought;
+    }
 }

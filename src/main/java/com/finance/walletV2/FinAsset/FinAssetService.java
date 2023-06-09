@@ -105,7 +105,7 @@ public class FinAssetService {
         finAssetRepository.deleteById(finAssetToDelete.getId());
     }
 
-    public KpiRepresentation getFinAssetKpis(LocalDate startDate, LocalDate endDate){
+    public KpiRepresentationAsset getFinAssetKpis(LocalDate startDate, LocalDate endDate){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AppUser appUser = appUserService.getOneUser(auth.getName());
 
@@ -115,7 +115,7 @@ public class FinAssetService {
         return finAssetRepository.findKpiRepresentation(appUser.getEmail(),start,end);
     }
 
-    public List<ChartRepresentationByCategory> getFinAssetChart(LocalDate startDate, LocalDate endDate){
+    public List<ChartRepresentationAsset> getFinAssetChart(LocalDate startDate, LocalDate endDate){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AppUser appUser = appUserService.getOneUser(auth.getName());
 
@@ -132,7 +132,7 @@ public class FinAssetService {
         LocalDateTime start = LocalDateTime.of(startDate, LocalTime.of(0,0,0));
         LocalDateTime end = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
 
-        KpiRepresentation assetBalance = finAssetRepository.findKpiRepresentation(appUser.getEmail(),start,end);
+        KpiRepresentationAsset assetBalance = finAssetRepository.findKpiRepresentation(appUser.getEmail(),start,end);
         KpiRepresentation transactionBalance = finTransactionService.getTransactionKpi(null,startDate,endDate);
 
         Map<String,Object> result = new HashMap<>();
