@@ -30,6 +30,7 @@ public class AppUser {
 
     @Column(nullable = false)
     @Size(min = 6,message = "Must be longer than 6 characters")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(nullable = false,updatable = false)
