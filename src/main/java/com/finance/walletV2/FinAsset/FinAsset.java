@@ -30,7 +30,7 @@ public class FinAsset {
     private String description;
 
     @Transient
-    private double profit;
+    private String profit;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -46,6 +46,6 @@ public class FinAsset {
 
     @PostLoad
     public void setProfit(){
-        this.profit = this.asset.getPriceCurrent() - this.priceBought;
+        this.profit = String.format("%.2f", this.asset.getPriceCurrent() - this.priceBought);
     }
 }
