@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +41,16 @@ public class AppUserService {
         return appUser;
     }
 
+    public Map<String,Object> getUserInfo (){
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        AppUser appUser = this.getOneUser(auth.getName());
+
+        return Map.of("User",appUser);
+    }
+
+
+
     public void addUser (AppUser appUser){
         appUser.setActive(true);
         appUser.setCreatedAt(LocalDateTime.now());
@@ -56,21 +68,27 @@ public class AppUserService {
     }
 
     public void updateUser (AppUser appUser){
-        appUserRepository.findById(appUser.getId()).orElseThrow(
+        AppUser appUserToEdit = appUserRepository.findById(appUser.getId()).orElseThrow(
                 ()->{
                     log.error("User with id: %s not found in Update User Service".formatted(appUser.getId()));
                     return new NotFoundException("User with id: %s not found".formatted(appUser.getId()));
                 });
 
-        appUser.setPassword(new BCryptPasswordEncoder().encode(appUser.getPassword()));
+        if (appUser.getPassword() != null){
+            appUserToEdit.setPassword(new BCryptPasswordEncoder().encode(appUser.getPassword()));
+        }
+
+        appUserToEdit.setFullName(appUser.getFullName());
+        appUserToEdit.setActive(appUser.isActive());
+
 
         try{
             appUserRepository.save(appUser);
             log.info("User with id: %s updated successfully!".formatted(appUser.getId()));
         }catch(Exception e){
-            log.error("Error adding User with id: %s in Add User Service".formatted(appUser.getId()));
+            log.error("Error updating User with id: %s in update User Service".formatted(appUser.getId()));
             log.error(e.getMessage());
-            throw new RuntimeException("Error adding user in Add User Service, Error: " + e.getLocalizedMessage());
+            throw new RuntimeException("Error adding user in update User Service, Error: " + e.getLocalizedMessage());
         }
     }
 

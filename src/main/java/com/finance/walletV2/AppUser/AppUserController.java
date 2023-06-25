@@ -32,6 +32,18 @@ public class AppUserController {
                 .build());
     }
 
+    @GetMapping(path = "/info")
+    public ResponseEntity<CustomResponse> getUserInfo(){
+        Map<String,Object> result = appUserService.getUserInfo();
+        return ResponseEntity.ok().body(CustomResponse.builder()
+                .message("Success")
+                .status(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .timestamp(LocalDateTime.now())
+                .data(result)
+                .build());
+    }
+
     @PostMapping
     public ResponseEntity<CustomResponse> addUser(@Valid @RequestBody AppUser appUser){
         appUserService.addUser(appUser);

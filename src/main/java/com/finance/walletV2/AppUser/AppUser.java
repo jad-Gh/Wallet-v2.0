@@ -22,6 +22,7 @@ public class AppUser {
     private Long id;
 
     @Column(nullable = false)
+    @Size(min = 6,message = "Must be longer than 6 characters")
     private String fullName;
 
     @Column(unique = true,nullable = false)
