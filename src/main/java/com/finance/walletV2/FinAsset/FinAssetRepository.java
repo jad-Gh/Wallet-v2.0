@@ -21,7 +21,7 @@ public interface FinAssetRepository extends JpaRepository<FinAsset,Long> {
 
 
     @Query(value = "Select new com.finance.walletV2.FinAsset.KpiRepresentationAsset(" +
-            "COUNT(f),SUM(f.asset.priceCurrent),SUM(f.asset.priceCurrent - f.priceBought)) " +
+            "COALESCE(COUNT(f),0),COALESCE(SUM(f.asset.priceCurrent),0),COALESCE(SUM(f.asset.priceCurrent - f.priceBought),0)) " +
             "FROM FinAsset f " +
             "WHERE f.appUser.email = ?1 " +
             "AND f.createdAt >=?2 " +
