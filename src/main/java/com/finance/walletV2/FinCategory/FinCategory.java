@@ -3,6 +3,8 @@ package com.finance.walletV2.FinCategory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.finance.walletV2.AppUser.AppUser;
+import com.finance.walletV2.FinAsset.FinAsset;
+import com.finance.walletV2.FinTransaction.FinTransaction;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -10,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -36,5 +39,9 @@ public class FinCategory {
     @JoinColumn()
     @JsonIgnore
     private AppUser appUser;
+
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    private List<FinTransaction> finTransactionList;
 
 }

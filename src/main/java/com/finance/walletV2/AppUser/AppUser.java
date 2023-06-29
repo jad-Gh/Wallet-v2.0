@@ -1,6 +1,10 @@
 package com.finance.walletV2.AppUser;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.finance.walletV2.FinAsset.FinAsset;
+import com.finance.walletV2.FinCategory.FinCategory;
+import com.finance.walletV2.FinTransaction.FinTransaction;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -11,6 +15,7 @@ import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -44,5 +49,17 @@ public class AppUser {
     @Column(nullable = false,updatable = false)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
+
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    private List<FinTransaction> finTransactionList;
+
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    private List<FinCategory> finCategoryList;
+
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    private List<FinAsset> finAssetList;
 
 }
