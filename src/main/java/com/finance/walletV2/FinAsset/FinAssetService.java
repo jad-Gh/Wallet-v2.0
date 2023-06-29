@@ -57,7 +57,7 @@ public class FinAssetService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         AppUser appUser = appUserService.getOneUser(auth.getName());
 
-        Asset assetToRetrieve = assetRepository.findByIdAndAppUser_Email(finAsset.getAsset().getId(), appUser.getEmail())
+        Asset assetToRetrieve = assetRepository.findById(finAsset.getAsset().getId())
                 .orElseThrow(()->
                         new NotFoundException("Asset not found")
                 );
@@ -81,7 +81,7 @@ public class FinAssetService {
                         new NotFoundException("Financial Asset not found")
                 );
 
-        Asset assetToRetrieve = assetRepository.findByIdAndAppUser_Email(finAsset.getAsset().getId(), appUser.getEmail())
+        Asset assetToRetrieve = assetRepository.findById(finAsset.getAsset().getId())
                 .orElseThrow(()->
                         new NotFoundException("Asset not found")
                 );

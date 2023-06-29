@@ -8,7 +8,4 @@ import java.util.Optional;
 
 @Repository
 public interface AssetRepository extends JpaRepository<Asset,Long> {
-    List<Asset> findAllByAppUser_Email(String email);
-
-    Optional<Asset> findByIdAndAppUser_Email(Long id,String email);
 }

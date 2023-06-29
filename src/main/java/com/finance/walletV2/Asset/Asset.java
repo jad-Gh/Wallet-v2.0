@@ -3,11 +3,15 @@ package com.finance.walletV2.Asset;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.finance.walletV2.AppUser.AppUser;
+import com.finance.walletV2.FinAsset.FinAsset;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.engine.internal.Cascade;
+
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -24,9 +28,8 @@ public class Asset {
 
     private double priceCurrent;
 
-    @ManyToOne()
-    @JoinColumn()
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
-    private AppUser appUser;
+    private List<FinAsset> finAssetList;
 
 }

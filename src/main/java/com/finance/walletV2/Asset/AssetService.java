@@ -26,30 +26,20 @@ public class AssetService {
     private final RestTemplate restTemplate;
 
     public List<Asset> findAllAssets(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        AppUser appUser = appUserService.getOneUser(auth.getName());
-
-        return assetRepository.findAllByAppUser_Email(appUser.getEmail());
+        return assetRepository.findAll();
     }
 
     public void addAsset(Asset asset){
         Asset assetToAdd = new Asset();
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        AppUser appUser = appUserService.getOneUser(auth.getName());
-
         assetToAdd.setName(asset.getName());
-        assetToAdd.setAppUser(appUser);
 
         assetRepository.save(assetToAdd);
     }
 
     public void updateAsset(Asset asset){
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        AppUser appUser = appUserService.getOneUser(auth.getName());
-
-        Asset assetToEdit = assetRepository.findByIdAndAppUser_Email(asset.getId(), appUser.getEmail())
+        Asset assetToEdit = assetRepository.findById(asset.getId())
                 .orElseThrow(()->
                    new NotFoundException("Asset not found")
                 );
@@ -60,10 +50,8 @@ public class AssetService {
     }
 
     public void deleteAsset(Long id){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        AppUser appUser = appUserService.getOneUser(auth.getName());
 
-        Asset assetToDelete = assetRepository.findByIdAndAppUser_Email(id, appUser.getEmail())
+        Asset assetToDelete = assetRepository.findById(id)
                 .orElseThrow(()->
                      new NotFoundException("Asset not found")
                 );
@@ -73,10 +61,7 @@ public class AssetService {
 
     public void updateGoldPrice(Long id){
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        AppUser appUser = appUserService.getOneUser(auth.getName());
-
-        Asset assetToEdit = assetRepository.findByIdAndAppUser_Email(id, appUser.getEmail())
+        Asset assetToEdit = assetRepository.findById(id)
                 .orElseThrow(()->
                         new NotFoundException("Asset not found")
                 );
@@ -91,7 +76,6 @@ public class AssetService {
 
         assetToEdit.setPriceCurrent(rep.getPrice());
         assetRepository.save(assetToEdit);
-
 
     }
 

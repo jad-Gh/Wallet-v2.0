@@ -83,12 +83,12 @@ public class AppUserService {
 
 
         try{
-            appUserRepository.save(appUser);
+            appUserRepository.save(appUserToEdit);
             log.info("User with id: %s updated successfully!".formatted(appUser.getId()));
         }catch(Exception e){
             log.error("Error updating User with id: %s in update User Service".formatted(appUser.getId()));
             log.error(e.getMessage());
-            throw new RuntimeException("Error adding user in update User Service, Error: " + e.getLocalizedMessage());
+            throw new RuntimeException("Error updating user in update User Service, Error: " + e.getLocalizedMessage());
         }
     }
 
