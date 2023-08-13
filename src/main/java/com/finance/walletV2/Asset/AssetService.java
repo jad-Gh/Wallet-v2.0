@@ -74,7 +74,12 @@ public class AssetService {
         GoldRepresentation rep = restTemplate.exchange("https://www.goldapi.io/api/XAU/USD",
                 HttpMethod.GET, entity, GoldRepresentation.class).getBody();
 
-        assetToEdit.setPriceCurrent(rep.getPrice());
+        if (assetToEdit.getName().contains("Coin")) {
+            assetToEdit.setPriceCurrent(rep.getPrice_gram_22k() * 8);
+        } else {
+            assetToEdit.setPriceCurrent(rep.getPrice());
+        }
+
         assetRepository.save(assetToEdit);
 
     }
